@@ -5,22 +5,28 @@ def heurystyka(meta, y, coords):
     odleglosc = np.sqrt(np.sum((coords[meta] - coords[y])**2))
     return odleglosc
 
-def A_gwiazdka(start, meta, graf):
+def A_gwiazdka(start, meta, graf, coords):
     przejrzane = set()
     rozpatrywane = {start}
     przyszedl_z = {}
-    n_wierzcholkow = graf.shape[0]
 
-    g = {i: float("inf") for i in range(n_wierzcholkow)}
+    #Wypelninie g i f wartosciami inf
+    n_wierzcholkow = graf.shape[0]
+    g = {}
+    for i in range(n_wierzcholkow):
+        g[i] = float('inf')
     g[start] = 0.0
-    f = {i: float("inf") for i in range(n_wierzcholkow)}
+
+    f = {}
+    for i in range(n_wierzcholkow):
+        f[i] = float('inf')
     f[start] = heurystyka(meta, start, coords)
 
     while rozpatrywane:
         x = min(rozpatrywane, key=f.get)
         if x == meta:
             trasa = zrekonstruuj_trase(przyszedl_z, x)
-            return trasa, g[x]
+            return trasa
 
         rozpatrywane.remove(x)
         przejrzane.add(x)
@@ -35,7 +41,7 @@ def A_gwiazdka(start, meta, graf):
                 if y not in rozpatrywane:
                     rozpatrywane.add(int(y))
 
-    return None, None
+    return None
 
 def zrekonstruuj_trase(przyszedl_z, x):
     trasa = [x]
@@ -47,7 +53,6 @@ def zrekonstruuj_trase(przyszedl_z, x):
 # Wczytanie pliku
 plik = input().strip()
 with open(plik) as f:
-    print("Ok1")
     # Wczytanie współrzędnych
     coords_raw = f.readline().strip()
     coords_raw2 = coords_raw.replace("(", "").replace(")", "").replace(",", " ")
@@ -60,13 +65,12 @@ with open(plik) as f:
     # Wczytanie macierzy sąsiedztwa (czytamy z uchwytu 'f', bo 2 linie już pobrane)
     graf = np.loadtxt(f)
 
-print("Ok2")
-najlepsza_trasa, koszt = A_gwiazdka(start, meta, graf)
-print("Ok3")
-nazwa = os.path.basename(plik)
-print("Ok4")
+najlepsza_trasa = A_gwiazdka(start, meta, graf, coords)
 
 if najlepsza_trasa is None:
     print("Brak")
 else:
-    print(najlepsza_trasa)
+    najlepsza_trasa_1 = []
+    for i in najlepsza_trasa:
+        najlepsza_trasa_1.append(i+1)
+    print(*najlepsza_trasa_1)
