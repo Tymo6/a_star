@@ -33,6 +33,8 @@ def A_gwiazdka(start, meta, graf, coords):
 
         sasiedzi_x = np.where(graf[x] != 0)[0]
         for y in sasiedzi_x:
+            if y in przejrzane:
+                continue
             tymczasowe_g = g[x] + graf[x, y]
             if tymczasowe_g < g[y]:
                 przyszedl_z[y] = x
