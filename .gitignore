@@ -1,1 +1,4 @@
 Dane/
+.venv/
+__pycache__/
+*.pyc
